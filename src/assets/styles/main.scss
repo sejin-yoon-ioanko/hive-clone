@@ -1,0 +1,13 @@
+@import './modules/reset.scss';
+
+html {
+  font-size: $f-s-root * 1px;
+}
+
+body {
+  font-family: $f-f-base;
+  font-size: $f-s-base;
+  font-weight: $f-w-base;
+  line-height: $f-l-base;
+  color: $f-c-base;
+}

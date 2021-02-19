@@ -1,0 +1,11 @@
+@mixin media($media) {
+  @if $media == until-m {
+    @media all and (max-width: $break-tablet) { @content; }
+  }
+  @else if $media == until-t {
+    @media all and (max-width: $break-tablet) { @content; }
+  }
+  @else if $media == over-t {
+    @media all and (min-width: $untilTablet + 1px) { @content; }
+  }
+}
