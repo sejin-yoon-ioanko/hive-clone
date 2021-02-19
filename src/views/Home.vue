@@ -2,10 +2,10 @@
   <div class="home">
     <button>asddas</button>
     <modal>
-      <template v-slot:activator="on">
-        <button @click="on">asdsdaasdasd</button>
+      <template #activator="{ on }">
+        <button @click="on">button</button>
       </template>
-      dasasddsa
+      content
     </modal>
   </div>
 </template>

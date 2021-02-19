@@ -1,5 +1,5 @@
 <template>
-  <slot name="activaotr"></slot>
+  <slot name="activator" :on="on"></slot>
   <transition>
     <div class="com_modal-wrap">
       <slot v-if="childDisplay"></slot>
