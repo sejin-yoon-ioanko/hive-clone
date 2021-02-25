@@ -40,3 +40,8 @@ yarn lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+### z-index
+
+.com_select__items: 10

@@ -33,6 +33,7 @@ time, mark, audio, video, input, button, select, svg {
 // utility el reset
 button {
 	cursor: pointer;
+	user-select: none;
 }
 button, a, input, select, textarea {
 	-webkit-tap-highlight-color: transparent;
