@@ -20,7 +20,7 @@
           v-for="(item, index) in resultItems"
           :key="`c-select-${index}`"
           role="option"
-          :class="{ 's-focus': currentIndex === index }"
+          :class="{ 'sc_focus': currentIndex === index }"
           v-click-sync="() => updateValue(item)"
         >{{ item.text }}</button>
       </template>
@@ -145,13 +145,13 @@ export default defineComponent({
 .com_select {
   position: relative;
   &__items {
-    background: #ededed;
+    background: $bg-base;
     contain: layout;
     position: absolute;
     z-index: 10;
     & > button {
       display: block;
-      &.s-focus {
+      &.sc-focus {
         background: red;
       }
     }

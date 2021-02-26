@@ -1,4 +1,6 @@
 @import './modules/reset.scss';
+@import './modules/styles.scss';
+@import './modules/atomic.scss';
 
 html {
   font-size: $f-s-root * 1px;
@@ -10,4 +12,9 @@ body {
   font-weight: $f-w-base;
   line-height: $f-l-base;
   color: $f-c-base;
+  background-color: $bg-base;
+}
+
+a {
+  color: $f-c-link;
 }
