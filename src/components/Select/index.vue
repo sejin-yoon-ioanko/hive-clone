@@ -142,6 +142,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+// 여긴 휘발성으로 만든 컴포넌트이므로 css 대충적용했습니다.
 .com_select {
   position: relative;
   &__items {
