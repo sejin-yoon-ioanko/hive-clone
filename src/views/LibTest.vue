@@ -6,15 +6,19 @@
       v-bind="currencyGrid"
       :rowData="rowData"
       @selectionChanged="selectionChanged"
-    >
-    </ag-grid>
+    />
+
+    <canvas ref="chartDomRef"></canvas>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import Chart from 'chart.js'
+import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { CRYPTOCURRENY } from '@/api/cryptoCurrency'
+import type { SocketCurrencyGetTicker } from '@/api/cryptoCurrency'
 import type { ColDef, GridOptions, SelectionChangedEvent } from 'ag-grid-community'
+import type { Ref } from 'vue'
 
 type GridField = {
   name: string;
@@ -33,7 +37,7 @@ const useCurrencyGrid = () => {
       { field: 'high' },
       { field: 'low' },
       { field: 'close' },
-      { field: 'volumne' }
+      { field: 'volumne', flex: 1 }
     ] as Array<ColDef & { field: keyof GridField }>,
     defaultColDef: {
       sortable: true
@@ -49,22 +53,53 @@ const useCurrencyGrid = () => {
   }
 }
 
+const useChart = (dom: Ref<HTMLCanvasElement>, currentKind: Ref<string>) => {
+  let websocket: WebSocket
+  let chart: Chart
+
+  function socketOnMessage(e: MessageEvent<SocketCurrencyGetTicker>) {
+  }
+
+  onMounted(() => {
+    chart = new Chart(dom.value, {
+    })
+
+    watch(currentKind, newKind => {
+      websocket.close()
+      if (!newKind) return false
+
+      try {
+        const socketUrl = CRYPTOCURRENY.getSocketUrl(newKind)
+        websocket = new WebSocket(socketUrl)
+        websocket.onmessage = socketOnMessage
+      } catch(er) {
+        alert('socket connect error')
+        throw new Error(er)
+      }
+    })
+  })
+}
+
 export default defineComponent({
   name: 'View_LibTest',
   setup() {
+    const chartDomRef = ref<HTMLCanvasElement>()
+    const currentKind = ref('')
+
     const { currencyGrid, rowData } = useCurrencyGrid()
+    useChart(chartDomRef as Ref<HTMLCanvasElement>, currentKind)
 
     // 빗썸 api 너무 구리다..
     CRYPTOCURRENY.getMarkets().then(({ data }) => {
       const rs: GridField[] = []
-      for (const [kind, currencyData] of Object.entries(data.data)) {
+      for (const [kind, { opening_price, max_price, min_price, closing_price, units_traded }] of Object.entries(data.data)) {
         if (kind !== 'date') rs.push({
           name: kind,
-          open: currencyData.opening_price,
-          high: currencyData.max_price,
-          low: currencyData.min_price,
-          close: currencyData.closing_price,
-          volumne: currencyData.units_traded
+          open: opening_price,
+          high: max_price,
+          low: min_price,
+          close: closing_price,
+          volumne: units_traded
         })
       }
       rowData.value = rs
@@ -75,21 +110,25 @@ export default defineComponent({
 
     return {
       currencyGrid,
-      rowData
+      rowData,
+      chartDomRef,
+      currentKind
     }
   },
   methods: {
     async selectionChanged(event: SelectionChangedEvent) {
       const selected = event.api.getSelectedRows() as GridField[]
-      if (!selected.length) return false
-      if (selected.length > 1) {
-        alert('1개만 선택해 주세요')
-        event.api.deselectAll()
+      if (!selected.length || selected.length > 1) {
+        this.currentKind = ''
+        if (selected.length) {
+          alert('1개만 선택해 주세요')
+          event.api.deselectAll()
+        }
         return false
       }
 
       const [ctDATA] = selected
-      console.log(ctDATA)
+      this.currentKind = ctDATA.name
     }
   }
 })
