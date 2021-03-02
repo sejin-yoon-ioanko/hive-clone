@@ -152,7 +152,7 @@ export default defineComponent({
     z-index: 10;
     & > button {
       display: block;
-      &.sc-focus {
+      &.sc_focus {
         background: red;
       }
     }
