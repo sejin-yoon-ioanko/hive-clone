@@ -98,17 +98,35 @@ const useCurrencyGrid = () => {
 const useChart = (dom: Ref<HTMLCanvasElement>, currentKind: Ref<string>) => {
   let chart: Chart
 
-  function currencyChange(newCurrency: string) {
-    console.log(newCurrency)
+  async function currencyChange(newCurrency: string) {
+    const { data } = await CRYPTOCURRENY.getCandlesticks(newCurrency)
+
+    chart.data.datasets?.push({
+      label: newCurrency,
+      data: []
+    })
+
+    for (let i = 0; i < data.length; i++) {
+      if (i === 20) break
+      // eslint-disable-next-line
+      const [dateInteger, _, close] = data[i]
+      const date = new Date(dateInteger)
+
+      chart.data.labels?.push(`${date.getFullYear() - 2000}-${date.getMinutes() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`)
+      // eslint-disable-next-line
+      chart.data.datasets![0].data?.push(parseFloat(close))
+    }
+    chart.update()
   }
 
   onMounted(() => {
     chart = new Chart(dom.value, {
       type: 'line'
     })
-    console.log(chart)
 
     watch(currentKind, newKind => {
+      chart.data.labels = []
+      chart.data.datasets = []
       if (!newKind) return false
       currencyChange(newKind)
     })

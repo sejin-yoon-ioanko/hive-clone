@@ -21,6 +21,18 @@ type ResCurrencyGetTicker = {
   };
 }
 
+type ResGetCandleSticks = {
+  status: string;
+  data: [
+    number, // date
+    string, // open
+    string, // close
+    string, // high
+    string, // low
+    string // amount
+  ][];
+}
+
 // type SocketCurrencyGetTicker = {
 //   "type": "ticker";
 //   "content": {
@@ -59,7 +71,7 @@ const CRYPTOCURRENY = {
     return setInterval(callApi, time)
   },
   getCandlesticks(kind: string, interval: '1m' | '3m' | '5m' | '10m' | '30m' | '1h' | '6h' | '12h' | '24h' = '1h') {
-    return cryptoCurreny.get<ResCurrencyGetTicker>(`candlestick/${kind}_KRW/${interval}`).then(({ data }) => data)
+    return cryptoCurreny.get<ResGetCandleSticks>(`candlestick/${kind}_KRW/${interval}`).then(({ data }) => data)
       .catch(er => {
         throw new Error(er)
       })
