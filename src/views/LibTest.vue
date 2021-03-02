@@ -98,12 +98,19 @@ const useCurrencyGrid = () => {
 const useChart = (dom: Ref<HTMLCanvasElement>, currentKind: Ref<string>) => {
   let chart: Chart
 
+  function currencyChange(newCurrency: string) {
+    console.log(newCurrency)
+  }
+
   onMounted(() => {
     chart = new Chart(dom.value, {
+      type: 'line'
     })
+    console.log(chart)
 
     watch(currentKind, newKind => {
       if (!newKind) return false
+      currencyChange(newKind)
     })
   })
 }
@@ -145,6 +152,8 @@ export default defineComponent({
 <style lang="scss">
 // 휘발성 style
 #v_lib-test_table {
+  // change highlight color
+  --ag-value-change-value-highlight-background-color: yellow !important;
   .s_change-up {
     color: red;
   }
